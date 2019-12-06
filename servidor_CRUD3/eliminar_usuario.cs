@@ -17,6 +17,8 @@ namespace servidor_CRUD3
     public partial class eliminar_usuario : Form
     {
         private usuario_registrado usuario;
+        private string nombre, ID, contrasena;
+
         public eliminar_usuario()
         {
             InitializeComponent();
@@ -37,6 +39,11 @@ namespace servidor_CRUD3
 
             MySqlConnection conexion = new MySqlConnection("datasource=127.0.0.1; port=3306; username=root; password=; database = usuarios;");
             conexion.Open();
+
+            // comando para seleccionar todas las celdas de una fila cuando esta se seleccione
+            // https://stackoverflow.com/questions/13672693/how-do-i-select-a-complete-datagridview-row-when-the-user-clicks-a-cell-of-that
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+
             try
             {
                 MySqlDataAdapter dataAdapter = new MySqlDataAdapter();
@@ -65,20 +72,45 @@ namespace servidor_CRUD3
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
+            // https://www.c-sharpcorner.com/UploadFile/1e050f/insert-update-and-delete-record-in-datagridview-C-Sharp/
+            nombre = dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString();
+            ID = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
+            contrasena = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
         }
 
         private void eliminar_btn_Click(object sender, EventArgs e)
         {
+            // https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.datagridview?view=netframework-4.8
+            // https://stackoverflow.com/questions/21038006/how-to-delete-selected-row-from-datagridview-and-database-in-c-sharp
             // boton para eliminar el usuario seleccionado
+            // boilerplate sacado de https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/selected-cells-rows-and-columns-datagridview
             // TODO: todo
+            // https://www.c-sharpcorner.com/UploadFile/1e050f/insert-update-and-delete-record-in-datagridview-C-Sharp/
+
+            MySqlConnection conexion = new MySqlConnection("datasource=127.0.0.1; port=3306; username=root; password=; database = usuarios;");
+            conexion.Open();
+
             try
             {
-                String nombre = DGVtoString(dataGridView1, '1');
-                String ID = DGVtoString(dataGridView1, '2');
-                String contra = DGVtoString(dataGridView1, '3');
-                Console.WriteLine(nombre, ID, contra);
-                Console.WriteLine();
+                // consigue el numero de celdas seleccionadas
+                Int32 celdas_seleccionadas = dataGridView1.GetCellCount(DataGridViewElementStates.Selected);
+                if (celdas_seleccionadas > 0)
+                {
+                    // para detectar si todas las celdas de datagrid estan seleccionadas
+                    if (dataGridView1.AreAllCellsSelected(true))
+                    {
+                        MessageBox.Show("todas las celdas estan seleccionadas");
+                    }
+                    else
+                    {
+
+                        Console.WriteLine(nombre);
+                        Console.WriteLine(ID);
+                        Console.WriteLine(contrasena);
+                        
+                        
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -87,7 +119,7 @@ namespace servidor_CRUD3
             }
             finally
             {
-
+                conexion.Close();
             }
         }
 

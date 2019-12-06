@@ -82,6 +82,11 @@ namespace servidor_CRUD3
                     MessageBox.Show("favor de introducir datos al campo de texto");
                 }
             }
+            catch(MySqlException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                MessageBox.Show(ex.ToString());
+            }
             catch(Exception ex)
             {
                 Console.WriteLine(ex.ToString());
